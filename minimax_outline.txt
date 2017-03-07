@@ -1,0 +1,85 @@
+MaxValue (board, depth, player, alpha, beta)
+MinValue (board, depth, player, alpha, beta)
+
+bool Board::checkMove(Move *m, Side side)
+void Board::doMove(Move *m, Side side)
+bool Board::hasMoves(Side side)
+int Board::countBlack()
+int Board::countWhite()
+void Board::setBoard(char data[])
+
+Move(int x, int y)
+getX()
+getY()
+setX()
+setY()
+
+Side black = BLACK;
+Side yolo = WHITE;
+
+PLAYERNAME = $@dB0Yz
+
+
+/*
+ * Sets the board state given an 8x8 char array where 'w' indicates a white
+ * piece and 'b' indicates a black piece. Mainly for testing purposes.
+ */
+
+// returns the maximum move value from this position, and that move location
+
+MaxValue (board, depth, player, alpha, beta) {
+    maxScore = -65
+    maxMove = null
+    
+    if (noMoves || at max depth)
+        return the current score
+        
+    create an array of the possible moves, and shuffle them
+    
+    for move in moves
+        create a new board instance
+        make the move in that board / pass in with the move to be made
+        get the moveValue and move with a new minvalue call (newboard, depth + 1,
+            otherPlayer(), alpha, beta)
+        
+        if moveValue > maxScore
+            maxScore = value
+            maxMove = move
+            
+        if value > alpha
+            alpha = value
+            
+        if alpha >= beta
+            return alpha, maxMove
+    
+    return maxValue, maxMove
+    
+MinValue (board, depth, player, alpha, beta) {
+    minScore = -65
+    minMove = null
+    
+    if (noMoves || at min depth)
+        return the current score
+        
+    create an array of the possible moves, and shuffle them
+    
+    for move in moves
+        create a new board instance
+        make the move in that board / pass in with the move to be made
+        get the moveValue and move with a new minvalue call (newboard, depth + 1,
+            otherPlayer(), alpha, beta)
+        
+        if moveValue < minScore
+            minScore = value
+            minMove = move
+            
+        if value < beta
+            beta = value
+            
+        if alpha >= beta
+            return beta
+            , minMove
+    
+    return minValue, minMove    
+    
+

@@ -22,6 +22,12 @@ Player::Player(Side side) {
 Player::~Player() {
 }
 
+Side otherSide() {
+    if (mySide == BLACK)
+        return WHITE;
+    else 
+        return BLACK;
+
 /*
  * Compute the next move given the opponent's last move. Your AI is
  * expected to keep track of the board on its own. If this is the first move,
@@ -36,9 +42,25 @@ Player::~Player() {
  * return nullptr.
  */
 Move *Player::doMove(Move *opponentsMove, int msLeft) {
+    if (msLeft < 1000 && msLeft > -1)
+        return nullptr;
+
+    if (testingMinimax)
+    {
+        board.doMove(opponentsMove, otherSide());
+        
+        
+        
+         
+    }
     /*
      * TODO: Implement how moves your AI should play here. You should first
      * process the opponent's move before calculating your own move
      */
     return nullptr;
 }
+
+
+
+
+
