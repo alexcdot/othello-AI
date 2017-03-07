@@ -26,6 +26,7 @@ int main(int argc, char *argv[]) {
     Player *player = new Player(WHITE);
     player->testingMinimax = true;
 
+    player->setBoard(boardData);
 
     /**
      * TODO: Write code to set your player's internal board state to the

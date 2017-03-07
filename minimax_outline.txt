@@ -7,6 +7,8 @@ bool Board::hasMoves(Side side)
 int Board::countBlack()
 int Board::countWhite()
 void Board::setBoard(char data[])
+int count(Side side);
+Board *copy();
 
 Move(int x, int y)
 getX()
@@ -30,15 +32,17 @@ PLAYERNAME = $@dB0Yz
 MaxValue (board, depth, player, alpha, beta) {
     maxScore = -65
     maxMove = null
-    
-    if (noMoves || at max depth)
-        return the current score
-        
+            
     create an array of the possible moves, and shuffle them
     
     for move in moves
         create a new board instance
         make the move in that board / pass in with the move to be made
+            if (noMoves || at max depth)
+                return the current score and move
+                -int basicCount = board->count(side) - board->count(otherSide);
+
+        
         get the moveValue and move with a new minvalue call (newboard, depth + 1,
             otherPlayer(), alpha, beta)
         
