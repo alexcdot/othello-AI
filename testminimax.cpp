@@ -26,6 +26,8 @@ int main(int argc, char *argv[]) {
     Player *player = new Player(WHITE);
     player->testingMinimax = true;
 
+    std::cout << "making board" << std::endl;
+
     player->setBoard(boardData);
 
     /**

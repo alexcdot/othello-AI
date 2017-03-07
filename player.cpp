@@ -7,7 +7,7 @@
  */
 Player::Player(Side side) : heuristic(side) {
     // Will be set to true in test_minimax.cpp.
-    testingMinimax = false;
+    testingMinimax = true;
 
     this->side = side;
     // Easier than recomputing it each time
@@ -36,10 +36,13 @@ Player::~Player() {
 Move *Player::doMove(Move *opponentsMove, int msLeft) {
     if (testingMinimax)
     {
+        std::cerr << "testing minimax" << std::endl;
+        std::cerr << "side (white is 0) " << side << std::endl;
         board.doMove(opponentsMove, otherSide);
-        Move *bestMove = MinimaxHelper();    
+        Move *bestMove = MinimaxHelper(); 
+        board.doMove(bestMove, side);
+           
         return bestMove;
-    
     }
     else
     {
@@ -95,7 +98,11 @@ Move *Player::MinimaxHelper()
         move.y = i;
         for (int j = 0; j < 8; j++) {
             move.x = j;
+            
             if (board.checkMove(&move, side)) {
+                
+                std::cerr << move.getX() << " " << move.getY() << std::endl;
+                
                 copy = board.copy();
                 copy->doMove(&move, side);
                 
@@ -122,12 +129,16 @@ Move *Player::MinimaxHelper()
                     alpha = score;
                 }
                 if (alpha >= beta) {
-                    return &bestMove;
+                    Move *returnMove = new Move (bestMove.getX(), 
+                    bestMove.getY());
+                    return returnMove;
                 }
             }
         }
     } 
-    return &bestMove;
+    Move *returnMove = new Move (bestMove.getX(), bestMove.getY());
+    
+    return returnMove;
 }
 
 int Player::Maximize(Board *board, int depth, int alpha, int beta)
@@ -142,6 +153,9 @@ int Player::Maximize(Board *board, int depth, int alpha, int beta)
         for (int j = 0; j < 8; j++) {
             move.x = j;
             if (board->checkMove(&move, side)) {
+            
+                std::cerr << move.getX() << " " << move.getY() << std::endl;
+
                 copy = board->copy();
                 copy->doMove(&move, side);
                 
@@ -171,6 +185,7 @@ int Player::Maximize(Board *board, int depth, int alpha, int beta)
             }
         }
     } 
+    std::cerr << bestScore << std::endl;
     return bestScore; 
 }
 
@@ -186,6 +201,9 @@ int Player::Minimize(Board *board, int depth, int alpha, int beta)
         for (int j = 0; j < 8; j++) {
             move.x = j;
             if (board->checkMove(&move, otherSide)) {
+
+                std::cerr << move.getX() << " " << move.getY() << std::endl;
+
                 copy = board->copy();
                 copy->doMove(&move, otherSide);
                 
@@ -215,6 +233,7 @@ int Player::Minimize(Board *board, int depth, int alpha, int beta)
             }
         }
     }
+    std::cerr << bestScore << std::endl;
     return bestScore;
     
 }
