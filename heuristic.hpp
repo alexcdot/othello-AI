@@ -6,13 +6,7 @@
 
 class Heuristic {
 public:
-    Heuristic(Side s);
-
-    int score(Board *board);
-
-private:
-    Side side;
-    Side otherSide;
+    int score(Board *board, Side side);
 };
 
 #endif
