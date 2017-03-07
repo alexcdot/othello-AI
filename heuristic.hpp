@@ -10,7 +10,7 @@ public:
 
     int score(Board *board);
 
-protected:
+private:
     Side side;
     Side otherSide;
 };
