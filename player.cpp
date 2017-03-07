@@ -5,7 +5,7 @@
  * on (BLACK or WHITE) is passed in as "side". The constructor must finish
  * within 30 seconds.
  */
-Player::Player(Side side) {
+Player::Player(Side side) : heuristic(side) {
     // Will be set to true in test_minimax.cpp.
     testingMinimax = false;
 
@@ -35,17 +35,32 @@ Player::~Player() {
  */
 Move *Player::doMove(Move *opponentsMove, int msLeft) {
     board.doMove(opponentsMove, otherSide);
-    Move m(0, 0);
+    Move move(-1, -1);
+    Move bestMove(-1, -1);
+    Board *copy = nullptr;
+    int score = INT_MIN;
+    int bestScore = INT_MIN;
     for (int i = 0; i < 8; i++) {
-        m.y = i;
+        move.y = i;
         for (int j = 0; j < 8; j++) {
-            m.x = j;
-            if (board.checkMove(&m, side)) {
-                Move *mo = new Move(m.x, m.y);
-                board.doMove(mo, side);
-                return mo;
+            move.x = j;
+            if (board.checkMove(&move, side)) {
+                copy = board.copy();
+                copy->doMove(&move, side);
+                score = heuristic.score(copy);
+                delete copy;
+                copy = nullptr;
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMove.x = move.x;
+                    bestMove.y = move.y;
+                }
             }
         }
+    }
+    if (bestMove.x != -1) {
+        board.doMove(&bestMove, side);
+        return new Move(bestMove.x, bestMove.y);
     }
     return nullptr;
 }

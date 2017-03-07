@@ -2,8 +2,10 @@
 #define __PLAYER_H__
 
 #include <iostream>
+#include <climits>
 #include "common.hpp"
 #include "board.hpp"
+#include "heuristic.hpp"
 using namespace std;
 
 class Player {
@@ -20,6 +22,7 @@ private:
     Side side;
     Side otherSide;
     Board board;
+    Heuristic heuristic;
 };
 
 #endif
