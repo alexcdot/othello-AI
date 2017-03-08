@@ -7,7 +7,7 @@
  */
 Player::Player(Side side) : heuristic(side) {
     // Will be set to true in test_minimax.cpp.
-    testingMinimax = true;
+    testingMinimax = false;
 
     this->side = side;
     // Easier than recomputing it each time
@@ -37,7 +37,6 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     if (testingMinimax)
     {
         std::cerr << "testing minimax" << std::endl;
-        std::cerr << "side (white is 0) " << side << std::endl;
         board.doMove(opponentsMove, otherSide);
         Move *bestMove = MinimaxHelper(); 
         board.doMove(bestMove, side);
@@ -78,6 +77,13 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     }
 }
 
+/* MinimaxHelper is the first function call for minimax. Unlike Maximize or
+ * Minimze, it returns the best move rather than the best score. Otherwise, it
+ * is basically a Maximize call. If there are no possible moves, it will return
+ * a nullptr.
+ *
+*/
+
 Move *Player::MinimaxHelper()
 {
     if (!board.hasMoves(side))
@@ -89,10 +95,12 @@ Move *Player::MinimaxHelper()
     int depth = 0;
     int alpha = INT_MIN;
     int beta = INT_MAX;
-    int bestScore = INT_MIN;
-    Board *copy = nullptr;
-    Move move(-1, -1);
-    Move bestMove(-1, -1);
+    int bestScore = INT_MIN;   
+    Board *copy = nullptr;      // copy of the board after making the move
+    Move move(-1, -1);          // move being considered
+    Move bestMove(-1, -1);      
+
+    // iterate through the positions in the board to see if they are moves
 
     for (int i = 0; i < 8; i++) {
         move.y = i;
@@ -103,22 +111,35 @@ Move *Player::MinimaxHelper()
                 
                 std::cerr << move.getX() << " " << move.getY() << std::endl;
                 
+                // create a copy of the board where you do the move
+                
                 copy = board.copy();
                 copy->doMove(&move, side);
+                
+                // if the depth of recursion is too great, or there are no
+                // possible moves for either side, just return board score
                 
                 if (depth > 1 || (!copy->hasMoves(side) 
                 && !copy->hasMoves(otherSide))) {
                     score = copy->count(side) - copy->count(otherSide);
                 }
+                
+                // if the opponent doesn't have moves, skip their turn
+                
                 else if (!copy->hasMoves(otherSide)) {
                     score = Maximize(copy, depth + 1, alpha, beta);
                 }
+                
+                // otherwise, allow the opponent to make their turn
+                
                 else {
                     score = Minimize(copy, depth + 1, alpha, beta);
                 }
                 
                 delete copy;
                 copy = nullptr;
+                
+                // keep track of the best score, and update alpha and beta
                 
                 if (score > bestScore) {
                     bestScore = score;
@@ -129,17 +150,20 @@ Move *Player::MinimaxHelper()
                     alpha = score;
                 }
                 if (alpha >= beta) {
-                    Move *returnMove = new Move (bestMove.getX(), 
-                    bestMove.getY());
-                    return returnMove;
+                    return new Move (bestMove.getX(), bestMove.getY());
                 }
             }
         }
     } 
-    Move *returnMove = new Move (bestMove.getX(), bestMove.getY());
     
-    return returnMove;
+    return new Move (bestMove.getX(), bestMove.getY());
 }
+
+/* Maximize tries to find the best move with a minimizing player. See comments
+ * inline in MinimaxHelper
+ * Maximize returns the maximum possible score.
+ *
+*/
 
 int Player::Maximize(Board *board, int depth, int alpha, int beta)
 {
@@ -189,6 +213,10 @@ int Player::Maximize(Board *board, int depth, int alpha, int beta)
     return bestScore; 
 }
 
+/* Minimize tries to find the best move against a maximizing player. 
+ * Minimize returns the minimum possible score.
+*/
+
 int Player::Minimize(Board *board, int depth, int alpha, int beta)
 {
     int score;
@@ -211,6 +239,7 @@ int Player::Minimize(Board *board, int depth, int alpha, int beta)
                 && !copy->hasMoves(otherSide))) {
                     score = copy->count(side) - copy->count(otherSide);
                 }
+                
                 else if (!copy->hasMoves(side)) {
                     score = Minimize(copy, depth + 1, alpha, beta);
                 }
