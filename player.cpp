@@ -7,7 +7,7 @@
  */
 Player::Player(Side side) {
     // Will be set to true in test_minimax.cpp.
-    testingMinimax = true;
+    testingMinimax = false;
 
     this->side = side;
     // Easier than recomputing it each time
@@ -34,48 +34,10 @@ Player::~Player() {
  * return nullptr.
  */
 Move *Player::doMove(Move *opponentsMove, int msLeft) {
-    if (testingMinimax)
-    {
-        std::cerr << "testing minimax" << std::endl;
-        std::cerr << "side (white is 0) " << side << std::endl;
         board.doMove(opponentsMove, otherSide);
         Move *bestMove = MinimaxHelper(); 
         board.doMove(bestMove, side);
-           
         return bestMove;
-    }
-    else
-    {
-        board.doMove(opponentsMove, otherSide);
-        Move move(-1, -1);
-        Move bestMove(-1, -1);
-        Board *copy = nullptr;
-        int score = INT_MIN;
-        int bestScore = INT_MIN;
-        for (int i = 0; i < 8; i++) {
-            move.y = i;
-            for (int j = 0; j < 8; j++) {
-                move.x = j;
-                if (board.checkMove(&move, side)) {
-                    copy = board.copy();
-                    copy->doMove(&move, side);
-                    score = heuristic.score(copy, side);
-                    delete copy;
-                    copy = nullptr;
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestMove.x = move.x;
-                        bestMove.y = move.y;
-                    }
-                }
-            }
-        }
-        if (bestMove.x != -1) {
-            board.doMove(&bestMove, side);
-            return new Move(bestMove.x, bestMove.y);
-        }
-        return nullptr;
-    }
 }
 
 Move *Player::MinimaxHelper()
