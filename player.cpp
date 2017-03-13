@@ -9,6 +9,8 @@ Player::Player(Side side) {
     // Will be set to true in test_minimax.cpp.
     testingMinimax = false;
 
+    cerr << "made player" << endl;
+
     this->side = side;
     // Easier than recomputing it each time
     otherSide = (side == BLACK) ? WHITE : BLACK;
@@ -35,9 +37,36 @@ Player::~Player() {
  */
 Move *Player::doMove(Move *opponentsMove, int msLeft) {
         board.doMove(opponentsMove, otherSide);
-        Move *bestMove = MinimaxHelper(); 
+        Move *bestMove = IterativeDeepening(msLeft); 
         board.doMove(bestMove, side);
         return bestMove;
+}
+
+Move *Player::IterativeDeepening(int msLeft) {
+    int maxDepth = 2;
+    Move * bestMove;
+    
+    chrono::time_point<chrono::system_clock> start, end;
+    start = chrono::system_clock::now();
+    
+    chrono::duration<double> elapsed_seconds;
+    end = chrono::system_clock::now();
+    elapsed_seconds = end - start;
+    
+    do {
+        cerr << maxDepth << " " << elapsed_seconds.count() << " " << ((double)msLeft)/40000.0 << endl;
+        
+        bestMove = MinimaxHelper(maxDepth);
+        maxDepth++;
+      
+        end = chrono::system_clock::now();
+        elapsed_seconds = end - start;
+        
+    } while ((elapsed_seconds.count() < ((double)msLeft / 40000.0)) && maxDepth < 60);
+    
+    cerr << "actual time spent " << elapsed_seconds.count() << endl;
+    
+    return bestMove;
 }
 
 /* MinimaxHelper is the first function call for minimax. Unlike Maximize or
@@ -47,15 +76,13 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
  *
 */
 
-Move *Player::MinimaxHelper()
-{
-    if (!board.hasMoves(side))
-    {
+Move *Player::MinimaxHelper(int maxDepth) {
+    if (!board.hasMoves(side)) {
         return nullptr;
     }
     
     int score;
-    int depth = 0;
+    int depth = maxDepth;
     int alpha = INT_MIN;
     int beta = INT_MAX;
     int bestScore = INT_MIN;   
@@ -80,7 +107,7 @@ Move *Player::MinimaxHelper()
                 // if the depth of recursion is too great, or there are no
                 // possible moves for either side, just return board score
                 
-                if (depth > 1 || (!copy->hasMoves(side) 
+                if (depth <= 0 || (!copy->hasMoves(side) 
                 && !copy->hasMoves(otherSide))) {
                     score = heuristic.score(copy, side);
                 }
@@ -88,13 +115,13 @@ Move *Player::MinimaxHelper()
                 // if the opponent doesn't have moves, skip their turn
                 
                 else if (!copy->hasMoves(otherSide)) {
-                    score = Maximize(copy, depth + 1, alpha, beta);
+                    score = Maximize(copy, depth - 1, alpha, beta);
                 }
                 
                 // otherwise, allow the opponent to make their turn
                 
                 else {
-                    score = Minimize(copy, depth + 1, alpha, beta);
+                    score = Minimize(copy, depth - 1, alpha, beta);
                 }
                 
                 delete copy;
@@ -142,15 +169,15 @@ int Player::Maximize(Board *board, int depth, int alpha, int beta)
                 copy = board->copy();
                 copy->doMove(&move, side);
                 
-                if (depth > 1 || (!copy->hasMoves(side) 
+                if (depth <= 0 || (!copy->hasMoves(side) 
                 && !copy->hasMoves(otherSide))) {
                     score = heuristic.score(copy, side);
                 }
                 else if (!copy->hasMoves(otherSide)) {
-                    score = Maximize(copy, depth + 1, alpha, beta);
+                    score = Maximize(copy, depth - 1, alpha, beta);
                 }
                 else {
-                    score = Minimize(copy, depth + 1, alpha, beta);
+                    score = Minimize(copy, depth - 1, alpha, beta);
                 }
                 
                 delete copy;
@@ -191,16 +218,16 @@ int Player::Minimize(Board *board, int depth, int alpha, int beta)
                 copy = board->copy();
                 copy->doMove(&move, otherSide);
                 
-                if (depth > 1 || (!copy->hasMoves(side) 
+                if (depth <= 0 || (!copy->hasMoves(side) 
                 && !copy->hasMoves(otherSide))) {
                     score = heuristic.score(copy, side);
                 }
                 
                 else if (!copy->hasMoves(side)) {
-                    score = Minimize(copy, depth + 1, alpha, beta);
+                    score = Minimize(copy, depth - 1, alpha, beta);
                 }
                 else {
-                    score = Maximize(copy, depth + 1, alpha, beta);
+                    score = Maximize(copy, depth - 1, alpha, beta);
                 }
                 
                 delete copy;
