@@ -68,6 +68,20 @@ bool Board::hasMoves(Side side) {
 }
 
 /*
+ * How many possible legal moves does this side have?
+ */
+int Board::countMoves(Side side) {
+    int result = 0;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            Move move(i, j);
+            if (checkMove(&move, side)) result++;
+        }
+    }
+    return result;
+}
+
+/*
  * Returns true if a move is legal for the given side; false otherwise.
  */
 bool Board::checkMove(Move *m, Side side) {
@@ -153,6 +167,13 @@ int Board::count(Side side) {
  */
 int Board::countBlack() {
     return black.count();
+}
+
+/*
+ * Number of empty spaces.
+ */
+int Board::countEmpty() {
+    return 64 - taken.count();
 }
 
 /*

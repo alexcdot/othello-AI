@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 #include <climits>
+#include <chrono>
+#include <ctime>
 #include "common.hpp"
 #include "board.hpp"
 #include "heuristic.hpp"
@@ -16,7 +18,8 @@ public:
     ~Player();
 
     Move *doMove(Move *opponentsMove, int msLeft);
-    Move *MinimaxHelper();
+    Move *IterativeDeepening(int msLeft);
+    Move *MinimaxHelper(int maxDepth);
     
     int Maximize(Board *board, int depth, int alpha, int beta);
     int Minimize(Board *board, int depth, int alpha, int beta);
