@@ -12,3 +12,5 @@ use more of its time, and the heuristic was improved to avoid spaces adjacent to
 unoccupied corners and to measure board position by number of moves available in
 the early and middle game, as suggested here:
 http://www.soongsky.com/en/strategy2/ch3.php
+
+We expect these strategies to work because they defeat the provided AIs.
