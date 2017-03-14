@@ -156,6 +156,13 @@ int Board::countBlack() {
 }
 
 /*
+ * Number of empty spaces.
+ */
+int Board::countEmpty() {
+    return 64 - taken.count();
+}
+
+/*
  * Current count of white stones.
  */
 int Board::countWhite() {

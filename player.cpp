@@ -49,6 +49,18 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
  */
 
 Move *Player::IterativeDeepening(int msLeft) {
+    double timeLimit;
+    int empty = board.countEmpty();
+    if (empty == 60) {
+        // Don't waste time searching; all first moves are the same.
+        return new Move(2, 3);
+    } else if (empty > 55) {
+        timeLimit = 1.0;
+    } else if (empty > 45) {
+        timeLimit = 2.0;
+    } else {
+        timeLimit = msLeft / 40000.0;
+    }
 
     // initial max depth for minimax is 2
 
@@ -78,7 +90,7 @@ Move *Player::IterativeDeepening(int msLeft) {
     // are few spots on the board time, or if the game just
     // started.
         
-    } while ((elapsed_seconds.count() < ((double)msLeft / 40000.0)) && maxDepth < 65 - (board.countWhite() + board.countBlack()) && board.countBlack() > 2);
+    } while ((elapsed_seconds.count() < timeLimit) && maxDepth < 65 - (board.countWhite() + board.countBlack()) && board.countBlack() > 2);
     
     cerr << "actual time spent " << elapsed_seconds.count() << endl;
     
