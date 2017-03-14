@@ -8,7 +8,6 @@ int Heuristic::score(Board *board, Side side) {
     // Special value is placed on pieces that can never be flipped.
     // This is always the case for corners, but a piece adjacent to a piece in a
     // corner will also satisfy this, and so on.
-    // TODO: save state between turns instead of recalculating each time
     bool fixed[8][8];
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
