@@ -15,6 +15,9 @@ int Heuristic::score(Board *board, Side side) {
         }
     }
     int fixedCount = 0;
+    int corners = 0;;
+    int xsquares = 0;;
+    int csquares = 0;;
     for (int dx = 1; dx >= -1; dx -= 2) {
         for (int dy = 1; dy >= -1; dy -= 2) {
             int x = (dx == 1) ? 0 : 7;
@@ -44,15 +47,39 @@ int Heuristic::score(Board *board, Side side) {
                         }
                     }
                 }
-                if (source != side) {
+                if (source == side) {
+                    corners++;
+                } else {
                     // Fixed points of opponent color reduce score
                     thisCount *= -1;
+                    corners--;
                 }
                 fixedCount += thisCount;
+            } else {
+                // Corner is open, so it would be bad to give access to it
+                if (board->occupied(x + dx, y + dy)) {
+                    xsquares += (board->get(side, x + dx, y + dy)) ? 1 : -1;
+                }
+                if (board->occupied(x + dx, y)) {
+                    csquares += (board->get(side, x + dx, y)) ? 1 : -1;
+                }
+                if (board->occupied(x, y + dy)) {
+                    csquares += (board->get(side, x, y + dy)) ? 1 : -1;
+                }
             }
         }
     }
-    int weight = 4;
-    fixedCount *= weight;
-    return fixedCount + basicCount;
+
+    int fixedWeight = 5;
+    int cornerWeight = 15; // Note that corners get counted as corners and fixed
+    int xsquareWeight = -10;
+    int csquareWeight = -5;
+
+    int result = 0;
+    result += basicCount;
+    result += fixedCount * fixedWeight;
+    result += corners * cornerWeight;
+    result += xsquares * xsquareWeight;
+    result += csquares * csquareWeight;
+    return result;
 }
