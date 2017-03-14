@@ -77,7 +77,7 @@ Move *Player::IterativeDeepening(int msLeft) {
     elapsed_seconds = end - start;
     
     do {
-        cerr << maxDepth << " " << elapsed_seconds.count() << " " << ((double)msLeft)/40000.0 << endl;
+        cerr << maxDepth << " " << elapsed_seconds.count() << " " << timeLimit << endl;
         
         bestMove = MinimaxHelper(maxDepth);
         maxDepth++;
@@ -85,12 +85,11 @@ Move *Player::IterativeDeepening(int msLeft) {
         end = chrono::system_clock::now();
         elapsed_seconds = end - start;
         
-    // the while loop allows the function to only take up 5% 
-    // of the total time left, and prevents deepening if there
-    // are few spots on the board time, or if the game just
-    // started.
+    // the while loop allows the function to only take up to the timeLimit to
+    // determine it's move and prevents deepening if there
+    // are few spots on the board
         
-    } while ((elapsed_seconds.count() < timeLimit) && maxDepth < 65 - (board.countWhite() + board.countBlack()) && board.countBlack() > 2);
+    } while ((elapsed_seconds.count() < timeLimit) && maxDepth < 65 - (board.countWhite() + board.countBlack()));
     
     cerr << "actual time spent " << elapsed_seconds.count() << endl;
     
