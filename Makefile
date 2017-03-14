@@ -23,7 +23,13 @@ java:
 cleanjava:
 	make -C java/ clean
 
+testsuite:
+	make -C testsuite/
+
+cleantestsuite:
+	make -C testsuite/ clean
+
 clean:
 	rm -f *.o $(PLAYERNAME) testgame testminimax
 
-.PHONY: java testminimax
+.PHONY: java testminimax testsuite
