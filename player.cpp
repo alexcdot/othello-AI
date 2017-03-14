@@ -77,7 +77,7 @@ Move *Player::IterativeDeepening(int msLeft) {
     elapsed_seconds = end - start;
     
     do {
-        cerr << maxDepth << " " << elapsed_seconds.count() << " " << timeLimit << endl;
+        cerr << "current depth: " << maxDepth << " time taken: " << elapsed_seconds.count() << " time limit:  " << timeLimit << endl;
         
         bestMove = MinimaxHelper(maxDepth);
         maxDepth++;
