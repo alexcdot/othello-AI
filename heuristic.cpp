@@ -87,7 +87,7 @@ int Heuristic::score(Board *board, Side side) {
             result += basicCount;
         } else if (basicCount < 0) {
             // Loss
-            int result = INT_MIN + 100;
+            result = INT_MIN + 100;
             result += basicCount;
         } else {
             // Tie
@@ -137,6 +137,9 @@ int Heuristic::score(Board *board, Side side) {
         // Something has gone terribly wrong
         cerr << "Nonsensical number of empty squares: " << board->countEmpty();
         cerr << endl;
+        // Still assign values so compiler doesn't complain
+        discWeight = 10;
+        moveWeight = 15;
         break;
     }
 
