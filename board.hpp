@@ -20,6 +20,7 @@ public:
 
     bool isDone();
     bool hasMoves(Side side);
+    int countMoves(Side side);
     bool checkMove(Move *m, Side side);
     void doMove(Move *m, Side side);
     bool onBoard(int x, int y);
@@ -28,6 +29,7 @@ public:
     int count(Side side);
     int countBlack();
     int countWhite();
+    int countEmpty();
 
     void setBoard(char data[]);
 };

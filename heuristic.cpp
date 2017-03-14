@@ -1,3 +1,6 @@
+#include <climits>
+#include <iostream>
+
 #include "heuristic.hpp"
 
 int Heuristic::score(Board *board, Side side) {
@@ -70,13 +73,81 @@ int Heuristic::score(Board *board, Side side) {
         }
     }
 
-    int fixedWeight = 5;
-    int cornerWeight = 15; // Note that corners get counted as corners and fixed
-    int xsquareWeight = -10;
-    int csquareWeight = -5;
+    int ourMoves = board->countMoves(side);
+    int oppMoves = board->countMoves(otherSide);
+    if (ourMoves == 0 && oppMoves == 0) {
+        // Game over! Approximately infinitely good for the winner.
+        // Might as well distinguish by margin of victory
+        // Never actually return INT_MAX or INT_MIN so as not to be equal to the
+        // dummy value used in finding the min / max of a set
+        int result;
+        if (basicCount > 0) {
+            // Win
+            result = INT_MAX - 100;
+            result += basicCount;
+        } else if (basicCount < 0) {
+            // Loss
+            int result = INT_MIN + 100;
+            result += basicCount;
+        } else {
+            // Tie
+            // Less desirable than continued gameplay, but much better than loss
+            result = INT_MIN / 2;
+        }
+        return result;
+    }
+    int moves = ourMoves - oppMoves;
+
+    int discWeight;
+    int moveWeight;
+
+    switch(board->countEmpty() / 10) {
+      case 6:
+        // Starting configuration: doesn't matter, score will be zero anyway
+        discWeight = 0;
+        moveWeight = 0;
+        break;
+      case 5:
+      case 4:
+        // Early game. Moves much more important than unstable discs.
+        discWeight = 1;
+        moveWeight = 15;
+        break;
+      case 3:
+        // Early middle game. Moves still of dominating importance.
+        discWeight = 5;
+        moveWeight = 15;
+        break;
+      case 2:
+        // Late game. Discs becoming more important.
+        discWeight = 15;
+        moveWeight = 15;
+        break;
+      case 1:
+        // Near endgame. Time to focus on securing discs.
+        discWeight = 15;
+        moveWeight = 5;
+        break;
+      case 0:
+        // Endgame. Discs now quite important.
+        discWeight = 15;
+        moveWeight = 1;
+        break;
+      default:
+        // Something has gone terribly wrong
+        cerr << "Nonsensical number of empty squares: " << board->countEmpty();
+        cerr << endl;
+        break;
+    }
+
+    int fixedWeight = 50;
+    int cornerWeight = 150; // Note that corners get counted as corners and fixed
+    int xsquareWeight = -100;
+    int csquareWeight = -70;
 
     int result = 0;
-    result += basicCount;
+    result += basicCount * discWeight;
+    result += moves * moveWeight;
     result += fixedCount * fixedWeight;
     result += corners * cornerWeight;
     result += xsquares * xsquareWeight;
