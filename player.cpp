@@ -54,10 +54,10 @@ Move *Player::IterativeDeepening(int msLeft) {
     if (empty == 60) {
         // Don't waste time searching; all first moves are the same.
         return new Move(2, 3);
-    } else if (empty > 55) {
-        timeLimit = 1.0;
-    } else if (empty > 45) {
-        timeLimit = 2.0;
+    } else if (empty > 50) {
+        timeLimit = msLeft / 300000.0;
+    } else if (empty > 40) {
+        timeLimit = msLeft / 100000.0;
     } else {
         timeLimit = msLeft / 40000.0;
     }
