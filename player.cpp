@@ -42,9 +42,20 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         return bestMove;
 }
 
+/*
+ * Iterative Deepening saves the latest best move from a minimax search, and 
+ * continues searching at a greater depth if there is time. Each move should
+ * take around 5% of the remaining time left. 
+ */
+
 Move *Player::IterativeDeepening(int msLeft) {
+
+    // initial max depth for minimax is 2
+
     int maxDepth = 2;
     Move * bestMove;
+    
+    // start the clock to check for the duration of the turn
     
     chrono::time_point<chrono::system_clock> start, end;
     start = chrono::system_clock::now();
@@ -62,7 +73,12 @@ Move *Player::IterativeDeepening(int msLeft) {
         end = chrono::system_clock::now();
         elapsed_seconds = end - start;
         
-    } while ((elapsed_seconds.count() < ((double)msLeft / 40000.0)) && maxDepth < 60);
+    // the while loop allows the function to only take up 5% 
+    // of the total time left, and prevents deepening if there
+    // are few spots on the board time, or if the game just
+    // started.
+        
+    } while ((elapsed_seconds.count() < ((double)msLeft / 40000.0)) && maxDepth < 65 - (board.countWhite() + board.countBlack()) && board.countBlack() > 2);
     
     cerr << "actual time spent " << elapsed_seconds.count() << endl;
     
@@ -72,7 +88,7 @@ Move *Player::IterativeDeepening(int msLeft) {
 /* MinimaxHelper is the first function call for minimax. Unlike Maximize or
  * Minimze, it returns the best move rather than the best score. Otherwise, it
  * is basically a Maximize call. If there are no possible moves, it will return
- * a nullptr.
+ * a nullptr. The minimax is optimized with alpha-beta pruning
  *
 */
 
