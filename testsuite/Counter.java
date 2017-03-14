@@ -28,27 +28,27 @@ public class Counter implements OthelloObserver {
     }
   }
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("Black wins:    ");
-    sb.append(blackWins);
-    sb.append('\n');
-    sb.append("White wins:    ");
-    sb.append(whiteWins);
-    sb.append('\n');
-    sb.append("Ties:          ");
-    sb.append(ties);
-    sb.append('\n');
-    sb.append("White error:   ");
-    sb.append(whiteErrs);
-    sb.append('\n');
-    sb.append("Black error:   ");
-    sb.append(blackErrs);
-    sb.append('\n');
-    sb.append("Server error:  ");
-    sb.append(serverErrs);
-    sb.append('\n');
-    return sb.toString();
+  public int getBlackWins() {
+    return blackWins;
+  }
+
+  public int getWhiteWins() {
+    return whiteWins;
+  }
+
+  public int getTies() {
+    return ties;
+  }
+
+  public int getBlackErrors() {
+    return blackErrs;
+  }
+
+  public int getWhiteErrors() {
+    return whiteErrs;
+  }
+
+  public int getServerErrors() {
+    return serverErrs;
   }
 }

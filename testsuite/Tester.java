@@ -10,7 +10,18 @@ public class Tester {
         for (int i = 0; i < games; i++) {
             tester.playGame();
         }
-        System.out.println(tester.counter);
+        System.out.println();
+        System.out.println();
+        System.out.printf("%s:%n", args[1]);
+        System.out.printf("       wins: %5d%n", tester.counter.getBlackWins());
+        System.out.printf("       errors: %3d%n", tester.counter.getBlackErrors());
+        System.out.println();
+        System.out.printf("%s:%n", args[2]);
+        System.out.printf("       wins: %5d%n", tester.counter.getWhiteWins());
+        System.out.printf("       errors: %3d%n", tester.counter.getWhiteErrors());
+        System.out.println();
+        System.out.printf("Ties: %12d%n", tester.counter.getTies());
+        System.out.printf("Server errors: %3d%n", tester.counter.getServerErrors());
     }
 
     public Tester(String[] args) {
